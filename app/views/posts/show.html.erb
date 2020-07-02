@@ -5,7 +5,7 @@
 <% end %>
 
 <% @post.comments.each do |comment|%>
-  <p><%= comment.content %></p>
+  <p><%= "#{comment.user.username} says: #{comment.content}" %></p>
 <% end %>
 
 <ul>
@@ -13,3 +13,14 @@
     <li><%= link_to user.username, user_path(user)%></li>
   <% end%>
 </ul>
+
+<%= form_for Comment.new do |f| %>
+  <p> Comment: <%= f.text_field :content%></p>
+  <%= f.collection_select :user_id, User.all, :id, :username %>
+
+  <%= f.fields_for :user,  User.new do |attr|%>
+    <p>New User: <%= attr.text_field :username %></p>
+  <% end %>
+  <%= f.hidden_field :post_id, value:@post.id %>
+  <%= f.submit :'Create Comment'%>
+<% end %>
